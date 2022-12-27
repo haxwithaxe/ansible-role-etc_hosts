@@ -5,17 +5,17 @@ driver:
   name: docker
 platforms:
   - name: instance-one
-    image: geerlingguy/docker-ubuntu2004-ansible
+    image: geerlingguy/docker-ubuntu2204-ansible
     pre_build_image: true
     groups:
       - one
   - name: instance-many0
-    image: geerlingguy/docker-ubuntu2004-ansible
+    image: geerlingguy/docker-ubuntu2204-ansible
     pre_build_image: true
     groups:
       - many
   - name: instance-many1
-    image: geerlingguy/docker-ubuntu2004-ansible
+    image: geerlingguy/docker-ubuntu2204-ansible
     pre_build_image: true
     groups:
       - many
