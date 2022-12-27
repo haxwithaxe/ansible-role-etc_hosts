@@ -1,0 +1,36 @@
+---
+
+- name: Verify
+  hosts: one
+  gather_facts: false
+  tasks:
+    - name: Check for one in /tmp/hosts
+      shell: "grep -q '127.0.0.11 instance-one' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: one_in_etc_hosts
+
+    - name: Assert one in /tmp/hosts file
+      assert:
+        that: 'one_in_etc_hosts.rc == 0'
+
+    - name: Check for many0 in /tmp/hosts
+      shell: "grep -q '1.2.3.4 instance-many0' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: many0_in_etc_hosts
+
+    - name: Assert many0 in /tmp/hosts file
+      assert:
+        that: 'many0_in_etc_hosts.rc == 0'
+
+    - name: Check for many1 in /tmp/hosts
+      shell: "grep -q '5.6.7.8 instance-many1' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: many1_in_etc_hosts
+
+    - name: Assert many1 in /tmp/hosts file
+      assert:
+        that: 'many1_in_etc_hosts.rc == 0'
+

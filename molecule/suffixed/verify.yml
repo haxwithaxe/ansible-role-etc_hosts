@@ -1,0 +1,36 @@
+---
+
+- name: Verify
+  hosts: one
+  gather_facts: false
+  tasks:
+    - name: Check for instance-one.suffix in /tmp/hosts
+      shell: "grep -q '127.0.0.11 instance-one.suffix' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: one_in_etc_hosts
+
+    - name: Assert instance-one.suffix in /tmp/hosts file
+      assert:
+        that: 'one_in_etc_hosts.rc == 0'
+
+    - name: Check for instance-many0.suffix in /tmp/hosts
+      shell: "grep -q '1.2.3.4 instance-many0.suffix' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: many0_in_etc_hosts
+
+    - name: Assert instance-many0.suffix in /tmp/hosts file
+      assert:
+        that: 'many0_in_etc_hosts.rc == 0'
+
+    - name: Check for instance-many1.suffix in /tmp/hosts
+      shell: "grep -q '5.6.7.8 instance-many1.suffix' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: many1_in_etc_hosts
+
+    - name: Assert instance-many1.suffix in /tmp/hosts file
+      assert:
+        that: 'many1_in_etc_hosts.rc == 0'
+

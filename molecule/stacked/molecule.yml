@@ -1,0 +1,47 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: instance-one
+    image: geerlingguy/docker-ubuntu2004-ansible
+    pre_build_image: true
+    groups:
+      - one
+  - name: instance-many0
+    image: geerlingguy/docker-ubuntu2004-ansible
+    pre_build_image: true
+    groups:
+      - many
+  - name: instance-many1
+    image: geerlingguy/docker-ubuntu2004-ansible
+    pre_build_image: true
+    groups:
+      - many
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      instance-one:
+        etc_hosts_address: "9.8.7.6"
+      instance-many0:
+        etc_hosts_address: "1.2.3.4"
+      instance-many1:
+        etc_hosts_address: "5.6.7.8"
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - side_effect
+    - verify
+    - cleanup
+    - destroy

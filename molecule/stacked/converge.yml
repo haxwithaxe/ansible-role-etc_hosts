@@ -1,0 +1,32 @@
+---
+
+- name: Prep for many group
+  hosts: all
+  tasks:
+    - name: Add mock /etc/hosts
+      file:
+        path: "/tmp/hosts"
+        state: touch
+
+- name: Converge
+  hosts: one
+  tasks:
+    - name: "Add hosts entries with haxwithaxe.etc_hosts "
+      include_role:
+        name: "haxwithaxe.etc_hosts"
+      vars:
+        etc_hosts_path: /tmp/hosts
+
+    - name: "Prepend hosts entries with .suffix with haxwithaxe.etc_hosts"
+      include_role:
+        name: "haxwithaxe.etc_hosts"
+      vars:
+        etc_hosts_path: /tmp/hosts
+        etc_hosts_suffix: .suffix
+
+    - name: "Prepend hosts entries with .end with haxwithaxe.etc_hosts"
+      include_role:
+        name: "haxwithaxe.etc_hosts"
+      vars:
+        etc_hosts_path: /tmp/hosts
+        etc_hosts_suffix: .end

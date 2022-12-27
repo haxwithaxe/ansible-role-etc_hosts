@@ -1,0 +1,21 @@
+galaxy_info:
+  role-name: etc_hosts
+  author: haxwithaxe
+  description: your role description
+  license: GPL-3.0-only
+
+  min_ansible_version: 2.1
+
+  platforms:
+   - name: Debian
+     versions:
+     - all
+   - name: RedHat
+     versions:
+     - all
+
+  galaxy_tags:
+    - networking
+    - system
+
+dependencies: []
