@@ -73,4 +73,4 @@ GPLv3
 Author Information
 ------------------
 
-Created by (haxwithaxe)[https://github.com/haxwithaxe]
+Created by [haxwithaxe](https://github.com/haxwithaxe)
