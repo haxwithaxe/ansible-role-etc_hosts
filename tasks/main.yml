@@ -5,49 +5,56 @@
   when: item != inventory_hostname
   with_items: "{{ groups[etc_hosts_group] }}"
 
-# Match any IP to allow redefining hostnames
-- name: Clear IPv4 localhost entry
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    regex: '((?:[0-2]?[0-9]?[0-9]\.){3}[0-2]?[0-9]?[0-9]) *((?:[^ \r\n]* )*) *{{ inventory_hostname }}{{ etc_hosts_suffix }} *((?: [^ \r\n]*)*)$'
-    line: '\1 \2\3'
-    backrefs: yes
+
+- block:
+  - name: Check for IPv4 localhost entry
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      regex: '^{{ etc_hosts_localhost_ipv4_address }}.* {{inventory_hostname}}{{ etc_hosts_suffix }}( .*|$)'
+      state: absent
+    check_mode: yes
+    changed_when: no
+    register: has_localhost
+
+  - name: "Clear IPv4 localhost entries for {{ inventory_hostname }}{{ etc_hosts_suffix }} from {{ etc_hosts_path }}"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      regex: '(.* ){{ inventory_hostname }}{{ etc_hosts_suffix }}( .*|$)'
+      line: '\1\2'
+      backrefs: yes
+    become: yes
+    when: has_localhost.found == 0
+
+
+  - name: "Check for IPv4 localhost {{ inventory_hostname }}{{ etc_hosts_suffix }} entry"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      regex: '^{{ etc_hosts_localhost_ipv4_address }}.*$'
+      state: absent
+    check_mode: yes
+    changed_when: no
+    register: has_entry
+    when: has_localhost.found == 0
+
+
+  - name: "Add IPv4 localhost stub entries for {{ inventory_hostname }}{{ etc_hosts_suffix }}"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      line: '{{ etc_hosts_localhost_ipv4_address }}'
+    when: has_entry.found == 0
+    become: yes
+    when: has_localhost.found == 0
+
+
+  - name: "Add IPv4 entry for {{ inventory_hostname }}{{ etc_hosts_suffix }} to {{ etc_hosts_path }}"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      regex: '{{ etc_hosts_localhost_ipv4_address }} *((?: [^ \r\n]*)*)$'
+      line: '{{ etc_hosts_localhost_ipv4_address }} {{ inventory_hostname }}{{ etc_hosts_suffix }}\1'
+      backrefs: yes
+    become: yes
+    when: has_localhost.found == 0
   when: inventory_hostname in groups[etc_hosts_group]
-  become: yes
-
-
-- name: Check for IPv4 localhost entry
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    regex: '^{{ etc_hosts_localhost_ipv4_address }}.*$'
-    state: absent
-  check_mode: yes
-  changed_when: no
-  when: inventory_hostname in groups[etc_hosts_group]
-  register: has_localhost
-
-
-- name: Add IPv4 localhost entry stub
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    line: '{{ etc_hosts_localhost_ipv4_address }}'
-    state: present
-    insertafter: EOF
-  when: inventory_hostname in groups[etc_hosts_group] and has_localhost.found == 0
-  become: yes
-
-
-- name: Add IPv4 localhost entry
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    regex: '{{ etc_hosts_localhost_ipv4_address }}((?: [^ \r\n]*)*)$'
-    line: '{{ etc_hosts_localhost_ipv4_address }} {{ inventory_hostname }}{{ etc_hosts_suffix }}\1'
-    backrefs: yes
-    state: present
-    insertafter: EOF
-  when: inventory_hostname in groups[etc_hosts_group]
-  become: yes
-
 
 - name: Comment orphaned IPs
   lineinfile:
