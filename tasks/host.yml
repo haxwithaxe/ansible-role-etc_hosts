@@ -10,42 +10,39 @@
   register: _has_existing_entry
 
 
-# Match any IP to allow redefining hostnames
-- name: "Clear IPv4 entries for {{ item }}{{ etc_hosts_suffix }} from {{ etc_hosts_path }}"
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    regex: '(.* ){{ item }}{{ etc_hosts_suffix }}( .*|$)'
-    line: '\1\2'
-    backrefs: yes
-  become: yes
-  when: _has_existing_entry.found == 0
+- name: Add IPv4 entry
+  block:
+  # Match any IP to allow redefining hostnames
+  - name: "Clear IPv4 entries for {{ item }}{{ etc_hosts_suffix }} from {{ etc_hosts_path }}"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      regex: '(.* ){{ item }}{{ etc_hosts_suffix }}( .*|$)'
+      line: '\1\2'
+      backrefs: yes
+    become: yes
 
+  - name: "Check for IPv4 {{ item }}{{ etc_hosts_suffix }} entry"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      regex: '^{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }}.*$'
+      state: absent
+    check_mode: yes
+    changed_when: no
+    register: has_entry
 
-- name: "Check for IPv4 {{ item }}{{ etc_hosts_suffix }} entry"
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    regex: '^{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }}.*$'
-    state: absent
-  check_mode: yes
-  changed_when: no
-  register: has_entry
-  when: _has_existing_entry.found == 0
+  - name: "Add IPv4 stub entries for {{ item }}{{ etc_hosts_suffix }}"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      line: '{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }}'
+    when: has_entry.found == 0
+    become: yes
 
+  - name: "Add IPv4 entry for {{ item }}{{ etc_hosts_suffix }} to {{ etc_hosts_path }}"
+    lineinfile:
+      path: "{{ etc_hosts_path }}"
+      regex: '{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }} *((?: [^ \r\n]*)*)$'
+      line: '{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }} {{ item }}{{ etc_hosts_suffix }}\1'
+      backrefs: yes
+    become: yes
 
-- name: "Add IPv4 stub entries for {{ item }}{{ etc_hosts_suffix }}"
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    line: '{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }}'
-  when: has_entry.found == 0
-  become: yes
-  when: _has_existing_entry.found == 0
-
-
-- name: "Add IPv4 entry for {{ item }}{{ etc_hosts_suffix }} to {{ etc_hosts_path }}"
-  lineinfile:
-    path: "{{ etc_hosts_path }}"
-    regex: '{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }} *((?: [^ \r\n]*)*)$'
-    line: '{{ hostvars[item].etc_hosts_address | default(hostvars[item].ansible_default_ipv4.address) }} {{ item }}{{ etc_hosts_suffix }}\1'
-    backrefs: yes
-  become: yes
   when: _has_existing_entry.found == 0

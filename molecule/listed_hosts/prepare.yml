@@ -1,0 +1,10 @@
+---
+
+- name: Prep for many group
+  hosts: all
+  tasks:
+    - name: Add mock /etc/hosts
+      file:
+        path: "/tmp/hosts"
+        state: touch
+

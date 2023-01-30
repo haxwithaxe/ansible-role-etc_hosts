@@ -4,6 +4,12 @@
   hosts: one
   gather_facts: false
   tasks:
+    - name: Debug
+      shell: "cat /tmp/hosts"
+      register: _debug
+
+    - debug: var=_debug.stdout
+
     - name: "Check for instance-one{.end,.suffix,} in /tmp/hosts"
       shell: "grep -q '127.0.0.11 instance-one.end instance-one.suffix instance-one' /tmp/hosts"
       failed_when: no
