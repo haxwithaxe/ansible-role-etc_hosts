@@ -5,3 +5,4 @@ etc_hosts_path: "/etc/hosts"
 etc_hosts_localhost_ipv4_address: 127.0.0.11
 etc_hosts_suffix: ""
 etc_hosts_orphaned_message: "Orphaned by Ansible {{ ansible_date_time.iso8601 }}"
+etc_hosts_list: []

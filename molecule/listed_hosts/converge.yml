@@ -1,0 +1,19 @@
+---
+
+- name: Prep for many group
+  hosts: all
+  tasks:
+    - name: Add mock /etc/hosts
+      file:
+        path: "/tmp/hosts"
+        state: touch
+
+- name: Converge
+  hosts: one
+  tasks:
+    - name: "Test haxwithaxe.etc_hosts adds hosts listed but not present"
+      include_role:
+        name: "haxwithaxe.etc_hosts"
+      vars:
+        # Can't fiddle with /etc/hosts in docker so this isn't default
+        etc_hosts_path: /tmp/hosts
