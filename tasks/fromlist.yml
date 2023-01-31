@@ -1,6 +1,6 @@
 ---
 
-- name: "Check for existing IPv4 {{ item }}{{ etc_hosts_suffix }} entry"
+- name: "Check for existing IPv4 {{ item.name }}{{ etc_hosts_suffix }} entry"
   lineinfile:
     path: "{{ etc_hosts_path }}"
     regex: '{{ item.address }}.* {{ item.name }}{{ etc_hosts_suffix }}( .*|$)'
