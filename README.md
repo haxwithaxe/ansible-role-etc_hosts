@@ -1,12 +1,13 @@
 etc_hosts
 =========
 
-Populate `/etc/hosts` with the primary IPv4 addresses or specified addresses of an inventory group. This will overwrite existing entries for hosts in the specified group. In the event of an IP address left without a hostname it will be commented out.
+Populate `/etc/hosts` with the primary IPv4 addresses or specified addresses of an inventory group or a list of names and addresses. This will overwrite existing entries for hosts in the specified group. In the event of an IP address left without a hostname it will be commented out.
 
 Requirements
 ------------
-
-An inventory group with one or more hosts. The hosts don't need an `ansible_default_ipv4.address` defined if `etc_hosts_address` is set. One of those values is required to create an entry in `/etc/hosts`.
+Either or both:
+* An inventory group with one or more hosts. The hosts don't need an `ansible_default_ipv4.address` defined if `etc_hosts_address` is set. One of those values is required to create an entry in `/etc/hosts`.
+* A list of names and addresses.
 
 Role Variables
 --------------
@@ -16,6 +17,7 @@ Role Variables
 * `etc_hosts_localhost_ipv4_address` - The IP address to use in the hosts file for the current node. Defaults to `127.0.0.11`.
 * `etc_hosts_suffix` - The suffix to add to the hostname (eg `.local`). Defaults to nothing (an empty string).
 * `etc_hosts_orphaned_message` - The message to leave in the comment for orphaned IP addresses. Defaults `Orphaned by Ansible {{ ansible_date_time.iso8601 }}`.
+* `etc_hosts_list` - A list of `dict`s with `name` and `address` keys. Defaults to an empty list.
 
 Dependencies
 ------------
@@ -30,6 +32,19 @@ Populate the `/etc/hosts` file on each machine in group `servers` with all the I
     - hosts: servers
       vars:
         etc_hosts_group: servers
+      roles:
+         - haxwithaxe.etc_hosts
+```
+
+Populate the `/etc/hosts` file on each host with all the IP and hostname pairs given in `etc_hosts_list`.
+```yaml
+    - hosts: all
+      vars:
+        etc_hosts_list:
+          - name: foo
+            address: 1.2.3.4
+          - name: bar
+            address: 2.3.4.5
       roles:
          - haxwithaxe.etc_hosts
 ```
