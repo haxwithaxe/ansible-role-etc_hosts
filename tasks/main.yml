@@ -5,9 +5,21 @@
   when: item != inventory_hostname
   with_items: "{{ groups[etc_hosts_group] }}"
 
+
 - name: "Add configured IPv4 hosts from etc_hosts_list to {{ etc_hosts_path }}"
   include_tasks: "fromlist.yml"
   with_items: "{{ etc_hosts_list }}"
+
+
+- name: "Add configured IPv4 hosts from etc_hosts_group_list to {{ etc_hosts_path }}"
+  include_tasks: "fromlist.yml"
+  with_items: "{{ etc_hosts_group_list }}"
+
+
+- name: "Add configured IPv4 hosts from etc_hosts_host_list to {{ etc_hosts_path }}"
+  include_tasks: "fromlist.yml"
+  with_items: "{{ etc_hosts_host_list }}"
+
 
 - name: Check for IPv4 localhost entry
   lineinfile:

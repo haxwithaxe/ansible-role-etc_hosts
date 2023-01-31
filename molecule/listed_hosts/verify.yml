@@ -14,23 +14,52 @@
       assert:
         that: 'one_in_etc_hosts.rc == 0'
 
-    - name: Check for many0 in /tmp/hosts
-      shell: "grep -q '1.2.3.4 instance-many0' /tmp/hosts"
+    - name: Check for global_host1 in /tmp/hosts
+      shell: "grep -q '1.2.3.4 global_host1' /tmp/hosts"
       failed_when: no
       changed_when: no
-      register: many0_in_etc_hosts
+      register: global_host1_in_etc_hosts
 
-    - name: Assert many0 in /tmp/hosts file
+    - name: Assert global_host1 in /tmp/hosts file
       assert:
-        that: 'many0_in_etc_hosts.rc == 0'
+        that: 'global_host1_in_etc_hosts.rc == 0'
 
-    - name: Check for many1 in /tmp/hosts
-      shell: "grep -q '5.6.7.8 instance-many1' /tmp/hosts"
+    - name: Check for global_host2 in /tmp/hosts
+      shell: "grep -q '2.3.4.5 global_host2' /tmp/hosts"
       failed_when: no
       changed_when: no
-      register: many1_in_etc_hosts
+      register: global_host2_in_etc_hosts
 
-    - name: Assert many1 in /tmp/hosts file
+    - name: Assert global_host2 in /tmp/hosts file
       assert:
-        that: 'many1_in_etc_hosts.rc == 0'
+        that: 'global_host2_in_etc_hosts.rc == 0'
 
+    - name: Check for global_host3 in /tmp/hosts
+      shell: "grep -q '3.4.5.6 global_host3' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: global_host3_in_etc_hosts
+
+    - name: Assert global_host3 in /tmp/hosts file
+      assert:
+        that: 'global_host3_in_etc_hosts.rc == 0'
+
+    - name: Check for group_host1 in /tmp/hosts
+      shell: "grep -q '4.5.6.7 group_host1' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: group_host1_in_etc_hosts
+
+    - name: Assert group_host1 in /tmp/hosts file
+      assert:
+        that: 'group_host1_in_etc_hosts.rc == 0'
+
+    - name: Check for host_host1 in /tmp/hosts
+      shell: "grep -q '5.6.7.8 host_host1' /tmp/hosts"
+      failed_when: no
+      changed_when: no
+      register: host_host1_in_etc_hosts
+
+    - name: Assert host_host1 in /tmp/hosts file
+      assert:
+        that: 'host_host1_in_etc_hosts.rc == 0'

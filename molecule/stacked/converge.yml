@@ -13,8 +13,16 @@
       include_role:
         name: "haxwithaxe.etc_hosts"
       vars:
+        etc_hosts_list:
+          - name: instance-one
+            address: "127.0.0.11"
+          - name: instance-many0
+            address: "1.2.3.4"
+          - name: instance-many1
+            address: "5.6.7.8"
         etc_hosts_path: /tmp/hosts
         etc_hosts_suffix: .suffix
+        etc_hosts_group: one
 
     - name: "Prepend hosts entries with .end with haxwithaxe.etc_hosts"
       include_role:

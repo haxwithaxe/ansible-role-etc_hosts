@@ -18,6 +18,8 @@ Role Variables
 * `etc_hosts_suffix` - The suffix to add to the hostname (eg `.local`). Defaults to nothing (an empty string).
 * `etc_hosts_orphaned_message` - The message to leave in the comment for orphaned IP addresses. Defaults `Orphaned by Ansible {{ ansible_date_time.iso8601 }}`.
 * `etc_hosts_list` - A list of `dict`s with `name` and `address` keys. Defaults to an empty list.
+* `etc_hosts_group_list` - The same as `etc_hosts_list` but for use in group_vars. Defaults to an empty list.
+* `etc_hosts_host_list` - The same as `etc_hosts_list` but for use in host_vars. Defaults to an empty list.
 
 Dependencies
 ------------

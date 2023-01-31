@@ -7,5 +7,32 @@
       include_role:
         name: "haxwithaxe.etc_hosts"
       vars:
+        etc_hosts_list:
+          - name: global_host1
+            address: 1.2.3.4
+          - name: global_host2
+            address: 2.3.4.5
+          - name: global_host3
+            address: 3.4.5.6
+        # Can't fiddle with /etc/hosts in docker so this isn't default
+        etc_hosts_path: /tmp/hosts
+    - name: "Test haxwithaxe.etc_hosts adds hosts listed by group_vars but not present"
+      include_role:
+        name: "haxwithaxe.etc_hosts"
+      vars:
+        # This doesn't need to really be set in group_vars
+        etc_hosts_group_list:
+          - name: group_host1
+            address: 4.5.6.7
+        # Can't fiddle with /etc/hosts in docker so this isn't default
+        etc_hosts_path: /tmp/hosts
+    - name: "Test haxwithaxe.etc_hosts adds hosts listed by host_vars but not present"
+      include_role:
+        name: "haxwithaxe.etc_hosts"
+      vars:
+        # This doesn't need to really be set in host_vars
+        etc_hosts_host_list:
+          - name: host_host1
+            address: 5.6.7.8
         # Can't fiddle with /etc/hosts in docker so this isn't default
         etc_hosts_path: /tmp/hosts
